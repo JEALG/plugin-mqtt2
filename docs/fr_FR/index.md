@@ -54,7 +54,7 @@ Une fois le broker Mosquitto installé *(si nécessaire)*, vous pouvez passer à
 
 Il est possible de créer des équipements MQTT directement dans le plugin.
 
-Il faut indiquer le topic racine de l'équipement *(`test` par exemple)*, ensuite selon le type de commandes :
+Il faut indiquer le topic racine de l'équipement *(`test` par exemple)*, attention le topic racine ne peux pas avoir plus de 2 niveaux (exe `niveau1/niveau2`) ensuite selon le type de commandes :
 
 - **Commandes info** : il suffit d'indiquer le topic complet.
   >Pour exemple, si vous mettez `toto/1`, tous les messages sur le topic `test/toto/1` seront automatiquement écrits sur la commande en question. Le système est capable de gérer les champs de type json, dans ce cas il faut mettre `toto/1/key1` ou `toto/1/key1/key2` pour descendre d'un niveau.
@@ -142,6 +142,35 @@ remote_username #REMOTE_USERNAME#
 remote_password #REMOTE_PASSWORD#
 local_username #LOCAL_USERNAME#
 local_password #LOCAL_PASSWORD#
+start_type automatic
+try_private true
+bridge_insecure true
+bridge_tls_version tlsv1.3
+````
+
+Exemple vous voulez envoyer depuis jeedom_2 des équipements dans jeedom_1 en ayant : 
+- jeedom_1 : 
+  - ip : 192.168.1.45
+  - topic racine : jeedom_1
+  - topic liée : jeedom_2
+  - authentification : jeedom:password_1
+- jeedom_2
+  - topic racine : jeedom_1
+  - authentification : jeedom:password_2
+
+Voila la configuration qu'il faut ajouter dans le jeedom_2 (parametre mosquito) : 
+
+````
+connection jeedom_1
+address 192.168.1.45:1883
+topic # both 0 jeedom_2/ jeedom_2/
+cleansession true
+notifications false
+remote_clientid jeedom_2
+remote_username jeedom
+remote_password password_1
+local_username jeedom
+local_password password_2
 start_type automatic
 try_private true
 bridge_insecure true

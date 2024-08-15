@@ -4,6 +4,28 @@
 >
 >Zur Erinnerung: Wenn keine Informationen über die Aktualisierung vorliegen, liegt dies daran, dass es sich nur um die Aktualisierung von Dokumentation, Übersetzung oder Text handelt.
 
+- Hinzufügen einer Online- und Offline-Meldung beim Starten und Stoppen (gewollt oder nicht) des Daemons in topic_racine/state
+- Wenn Sie Jeedom-Ausrüstung haben::Wenn Sie über das virtuelle Plugin überwachen, fügt das Plugin automatisch den Statusbefehl hinzu (online oder offline). Wenn Sie dieses Gerät bereits haben, müssen Sie die Erkennung neu starten
+- Es wurde ein Fehler bei der Übertragung des echten Ausrüstungstyps behoben (bei der Übertragung von Ausrüstung zwischen Jeedom))
+- Ein Fehler bei der Duplizierung der Ereignisüberwachungsaufgabe wurde behoben
+- Wenn auf exportierten Geräten das Quell-Plugin auf dem Ziel-Jeedom vorhanden ist, zeigt Jeedom das Plugin-Symbol an
+- Kein Fehler in den Protokollen während der Befehlsübertragung (vermeidet die Zerstörung von Jeedom, wenn der Daemon unterbrochen wird))
+
+# 12.08.2024
+
+- Ein Fehler beim Senden von Ausrüstung aus dem Konfigurationsfenster wurde behoben
+- Es wurde eine Schaltfläche zum Anzeigen von Mückenprotokollen hinzugefügt (sofern es sich im lokalen Brocker-Modus befindet))
+- Die Dokumentation wurde aktualisiert, um besser zu erklären, wie Themen zwischen zwei Moskitos synchronisiert werden
+
+# 10.08.2024
+
+- Ein Fehler beim Senden von Batterien wurde behoben (nicht statische Anrufmethode))
+
+# 08.09.2024
+
+- Verbesserte Darstellung des Konfigurationsfensters für übertragene Geräte
+- Ein Fehler bei verwaisten Befehlen bei der Übertragung über mqtt wurde behoben
+
 # 08.08.2024
 
 - Für Geräte, die über Mqtt übertragen werden, sendet das Plugin jetzt jede Nacht den Batteriestand
@@ -11,6 +33,7 @@
 - Korrekte Verwaltung von Aktualisierungsbefehlen für Widgets auf Geräten, die zwischen Jeedom übertragen werden
 - Beim Senden der Entdeckung zwischen Jeedom werden auch die Werte der Befehle übertragen (Sie müssen nicht auf eine Aktualisierung des Werts warten, um ihn auf dem Ziel zu haben). Erfordert erneutes Senden der Erkennung
 - Bei der Übertragung von Geräten zwischen Jeedom verwaltet das Plugin nun den tatsächlichen Gerätetyp, um mit mobilen Anwendungen kompatibel zu sein. Erfordert erneutes Senden der Erkennung
+- Ein globales Konfigurationsfenster für die Übertragung von Geräten zwischen Jeedom hinzugefügt
 
 # 08.05.2024
 

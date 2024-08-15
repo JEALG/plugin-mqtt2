@@ -4,6 +4,28 @@
 >
 >Como recordatorio, si no hay información sobre la actualización es porque se trata solo de la actualización de documentación, traducción o texto.
 
+- Adición de un mensaje en línea y fuera de línea al iniciar y detener (se desee o no) el demonio en topic_racine/state
+- Si tienes equipo jeedom::monitorear desde el complemento virtual el complemento agregará automáticamente el comando de estado (en línea o fuera de línea), si ya tiene este equipo debe reiniciar el descubrimiento
+- Se corrigió un error en la transmisión del tipo real de equipo (cuando se transmite equipo entre jeedom)
+- Se corrigió un error en la duplicación de la tarea de escucha de eventos
+- En el equipo exportado, si el complemento de origen existe en el jeedom de destino, jeedom mostrará el ícono del complemento
+- No hay errores en los registros durante la transmisión de comandos (evita romper el jeedom si se corta el demonio))
+
+# 12/08/2024
+
+- Se corrigió un error al enviar equipos desde la ventana de configuración
+- Se agregó un botón para ver los registros de mosquitos (si está en modo de administrador local))
+- Se actualizó la documentación para explicar mejor cómo sincronizar temas entre dos mosquitos
+
+# 10/08/2024
+
+- Se corrigió un error al enviar baterías (método de llamada no estática))
+
+# 09/08/2024
+
+- Se mejoró la visualización de la ventana de configuración para equipos transmitidos
+- Se corrigió un error en los comandos huérfanos cuando se transmitían a través de mqtt
+
 # 08/08/2024
 
 - Para los equipos transmitidos en Mqtt, el complemento ahora envía el nivel de la batería todas las noches
@@ -11,6 +33,7 @@
 - Gestión correcta de los comandos de actualización de los widgets de los equipos transmitidos entre Jeedom
 - Al enviar el descubrimiento entre Jeedom también se transmiten los valores de los comandos (no es necesario esperar una actualización del valor para tenerlo en el objetivo)). Requiere reenviar descubrimiento
 - Al transmitir equipos entre Jeedom, el complemento ahora gestiona el tipo real de equipo para que sea compatible con aplicaciones móviles. Requiere reenviar descubrimiento
+- Se agregó una ventana de configuración global para la transmisión de equipos entre Jeedom
 
 # 08/05/2024
 

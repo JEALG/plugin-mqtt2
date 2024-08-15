@@ -40,9 +40,9 @@ Sobald der Mosquitto-Broker installiert ist *(im Bedarfsfall)*, Sie können mit 
 
   >**WICHTIG**
   >
-  >Im lokalen Modus ist die Authentifizierung obligatorisch. Nach dem Hinzufügen muss Jeedom neu gestartet werden, damit dies wirksam wird.
+  > Im lokalen Modus ist die Authentifizierung obligatorisch. Nach dem Hinzufügen muss Jeedom neu gestartet werden, damit dies wirksam wird.
 
-- **Jeedom-Wurzelthema** : Stammthema, um einen Befehl an Jeedom zu senden oder auf dem es die Ereignisse sendet. Achtung, es ist nur möglich, maximal 1 oder 2 Ebenen zu setzen.
+- **Jeedom-Wurzelthema** : Stammsubjekt, um einen Befehl an Jeedom zu senden oder an den es Ereignisse zurückgibt. Achtung, es ist nur möglich, maximal 1 oder 2 Ebenen zu setzen.
 
 - **Übertragen Sie alle Ereignisse** : Aktivieren Sie das Kontrollkästchen, um alle Jeedom-Befehlsereignisse auf MQTT zu senden.
 
@@ -54,7 +54,7 @@ Sobald der Mosquitto-Broker installiert ist *(im Bedarfsfall)*, Sie können mit 
 
 Es ist möglich, MQTT-Equipment direkt im Plugin zu erstellen.
 
-Sie müssen das Wurzelthema des Geräts angeben *(„Testen“ zum Beispiel)*, dann nach Art der Befehle :
+Sie müssen das Wurzelthema des Geräts angeben *(„Testen“ zum Beispiel)*, Achten Sie darauf, dass das Stammthema je nach Befehlstyp nicht mehr als zwei Ebenen haben kann (exe „Ebene1/Ebene2“) :
 
 - **Info-Befehle** : Geben Sie einfach das vollständige Thema an.
   >Wenn Sie beispielsweise „toto/1“ eingeben, werden alle Nachrichten zum Thema „test/toto/1“ automatisch auf den betreffenden Befehl geschrieben. Das System kann Felder vom Typ json verwalten, in diesem Fall müssen Sie `toto/1/key1` oder `toto/1/key1/key2` eingeben, um eine Ebene nach unten zu gehen.
@@ -109,11 +109,11 @@ Das Plugin kann verschiedene Modultypen automatisch erkennen. Dazu müssen Sie n
 
 Dank des Plugins ist es möglich, Befehle zwischen zwei Jeedom zu übertragen (dieses System soll Jeelink ersetzen). Hier erfahren Sie, wie Sie es konfigurieren : 
 
-- auf der Jeedom-Quelle, die Sie benötigen :
+- **Auf der Jeedom-Quelle, die Sie benötigen** :
   - Konfigurieren Sie in der Konfiguration des MQTT-Manager-Plugins das Feld „Jeedom-Stammthema“. Standardmäßig ist es Jeedom. Es wird empfohlen, einen eindeutigen Wert pro Jeedom einzugeben (z. B : jeedom_salon)
   - Dann können Sie entweder das Kontrollkästchen „Alle Ereignisse übertragen“ aktivieren (immer noch in der Konfiguration des MQTT-Manager-Plugins). Dies wird nicht unbedingt empfohlen, da dadurch die gesamte Ausrüstung an den Ziel-Jeedom gesendet wird. Am besten gehen Sie zu dem Gerät, das Sie übertragen möchten, in der erweiterten Konfiguration des Geräts (Schaltfläche oben rechts auf der Gerätekonfigurationsseite) und setzen Sie dann unter „Zusätzliche Informationen“ den Haken bei „MQTT-Gerät übertragen“"
-- Auf dem Ziel Jeedom ist es notwendig : 
-  - Konfigurieren Sie in der Konfiguration des MQTT-Manager-Plugins das Feld „Linked Jeedom Topic“, indem Sie den Wert „Jeedom Root Topic“ des Quell-Jeedoms festlegen. Sie können mehrere Jeedom-Quellen angeben, indem Sie sie mit trennen ,. Seien Sie vorsichtig, Sie müssen hier sehr vorsichtig sein, Sie dürfen nicht dasselbe für „Jeedom-Stammthema“ auf Jeedoms haben. Dieses Feld ist die eindeutige Kennung des Jeedoms, daher ist es unbedingt erforderlich, unterschiedliche Werte zu haben
+- **Auf dem Ziel Jeedom ist es notwendig** : 
+  - Ohne das MQTT-Manager-Plugin zu konfigurieren, konfigurieren Sie das Feld „Linked Jeedom Topic“, indem Sie den Wert „Jeedom Root Topic“ des Quell-Jeedoms festlegen. Sie können mehrere Jeedom-Quellen angeben, indem Sie sie mit trennen ,. Seien Sie vorsichtig, hier müssen Sie sehr vorsichtig sein, Sie sollten auf keinen Fall dasselbe für „Jeedom-Root-Thema“ auf Jeedoms haben. Dieses Feld ist die eindeutige Kennung des Jeedoms, daher ist es unbedingt erforderlich, unterschiedliche Werte zu haben.
   - Aktivieren Sie im Plugin -> Programmierung -> Mqtt-Manager die automatische Erkennung (standardmäßig inaktiv))
 
 Dann müssen Sie nur noch in der Plugin-Konfiguration zum Jeedom zurückkehren und „Erkennung senden“ ausführen"
@@ -129,7 +129,7 @@ Dann müssen Sie nur noch in der Plugin-Konfiguration zum Jeedom zurückkehren u
 
 # Verknüpft zwei verschiedene Mücken 
 
-Es ist möglich, Themen zwischen mehreren Moskitos zu verknüpfen. Hier ist die Konfiguration zum Hinzufügen in Moskitos. Die Konfiguration muss nur an einem der Brocker-Mücken vorgenommen werden : 
+Es ist möglich, Themen zwischen mehreren Moskitos zu verknüpfen. Hier ist die Konfiguration zum Hinzufügen in Moskitos. Die Konfiguration muss nur an einem der Brocker-Mücken vorgenommen werden :
 
 ````````
 connection #NOM_CONNEXION#
@@ -148,12 +148,41 @@ bridge_insecure true
 bridge_tls_version tlsv1.3
 ````````
 
+Beispiel: Sie möchten Geräte von jeedom_2 an jeedom_1 senden, indem Sie haben : 
+- jeedom_1 : 
+  - IP : 192.168.1.45
+  - Wurzelthema : jeedom_1
+  - verwandtes Thema : jeedom_2
+  - Authentifizierung : jeedom:password_1
+- jeedom_2
+  - Wurzelthema : jeedom_1
+  - Authentifizierung : jeedom:password_2
+
+Hier ist die Konfiguration, die in jeedom_2 (Mosquito-Parameter) hinzugefügt werden muss) : 
+
+````````
+connection jeedom_1
+address 192.168.1.45:1883
+topic # both 0 jeedom_2/ jeedom_2/
+cleansession true
+notifications false
+remote_clientid jeedom_2
+remote_username jeedom
+remote_password password_1
+local_username jeedom
+local_password password_2
+start_type automatic
+try_private true
+bridge_insecure true
+bridge_tls_version tlsv1.3
+````````
+
 >**NOTIZ**
 >
-> ``#NOM_CONNEXION#`` : kann alles sein, was du willst, und es spielt keine Rolle. Sie können zum Beispiel „name_jeedom_source-name_jeedom_target“ ausführen
-> ``#REMOTE_CLIENT_ID#`` : spielt auch keine Rolle, Sie müssen nur eine eindeutige Zeichenfolge einfügen 
-> ``#LOCAL_TOPIC#`` : Der Name des lokalen Themas lautet häufig „Jeedom-Stammthema“ des lokalen Jeedoms 
-> ``#REMOTE_TOPIC#`` : Der Name des lokalen Themas ist häufig das „Jeedom-Stammthema“ des entfernten Jeedoms
+> - ``#NOM_CONNEXION#`` : kann alles sein, was du willst, und es spielt keine Rolle. Sie können zum Beispiel „name_jeedom_source-name_jeedom_target“ ausführen
+> - ``#REMOTE_CLIENT_ID#`` : spielt auch keine Rolle, Sie müssen nur eine eindeutige Zeichenfolge einfügen
+> - ``#LOCAL_TOPIC#`` : Der Name des lokalen Themas lautet häufig „Jeedom-Stammthema“ des lokalen Jeedoms
+> - ``#REMOTE_TOPIC#`` : Der Name des lokalen Themas ist häufig das „Jeedom-Stammthema“ des entfernten Jeedoms
 
 >**WICHTIG**
 >

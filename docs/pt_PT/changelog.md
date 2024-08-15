@@ -4,6 +4,28 @@
 >
 >Recorde-se que se não há informação sobre a atualização é porque se trata apenas de atualização de documentação, tradução ou texto.
 
+- Adição de uma mensagem online e offline ao iniciar e parar (desejado ou não) o daemon em topic_racine/state
+- Se você tiver equipamento jeedom::monitor a partir do plugin virtual o plugin adicionará automaticamente o comando state (online ou offline), caso você já possua este equipamento deverá reiniciar o Discovery
+- Corrigido bug na transmissão do tipo real de equipamento (ao transmitir equipamento entre jeedom)
+- Corrigido um bug na duplicação da tarefa de escuta de eventos
+- Em equipamentos exportados, se o plugin de origem existir no jeedom alvo, então o jeedom exibirá o ícone do plugin
+- Nenhum erro nos logs durante a transmissão do comando (evita quebrar o jeedom se o daemon for cortado)
+
+# 12/08/2024
+
+- Corrigido um bug ao enviar equipamentos da janela de configuração
+- Adicionado um botão para ver os registros do mosquito (se estiver no modo brocker local)
+- Atualizada a documentação para explicar melhor como sincronizar tópicos entre dois mosquitos
+
+# 10/08/2024
+
+- Corrigido um bug ao enviar baterias (método de chamada não estático)
+
+# 09/08/2024
+
+- Melhorada a exibição da janela de configuração dos equipamentos transmitidos
+- Corrigido um bug em comandos órfãos quando transmitidos através do mqtt
+
 # 08/08/2024
 
 - Para equipamentos transmitidos no Mqtt o plugin agora envia o nível da bateria todas as noites
@@ -11,6 +33,7 @@
 - Gerenciamento correto de comandos de atualização em widgets em equipamentos transmitidos entre Jeedom
 - Ao enviar a descoberta entre Jeedom os valores dos comandos também são transmitidos (não é necessário esperar uma atualização do valor para tê-lo no alvo). Requer reenvio de descoberta
 - Ao transmitir equipamentos entre Jeedom o plugin agora gerencia o tipo real de equipamento para ser compatível com aplicações mobile. Requer reenvio de descoberta
+- Adicionada janela de configuração global para transmissão de equipamentos entre Jeedom
 
 # 05/08/2024
 

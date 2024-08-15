@@ -4,6 +4,28 @@
 >
 >As a reminder, if there is no information on the update, it is because it concerns only the update of documentation, translation or text.
 
+- Added an online and offline message when starting and stopping (wanted or not) the daemon in topic_racine/state
+- If you have jeedom equipment::monitor from the virtual plugin the plugin will automatically add the state command (online or offline), if you already have this equipment you must restart the discovery
+- Fixed a bug on the transmission of the real type of equipment (when transmitting equipment between jeedom)
+- Fixed bug on duplication of event listening task
+- On exported equipment if the source plugin exists on the target jeedom then jeedom will display the plugin icon
+- No error in the logs when transmitting the command (avoids breaking jeedom if the daemon is cut off)
+
+# 12/08/2024
+
+- Fixed a bug when sending equipment from the configuration window
+- Added a button to see mosquitto logs (if it is in local broker mode))
+- Updated the documentation to better explain how to synchronize topics between two mosquitto
+
+# 10/08/2024
+
+- Fixed a bug on sending batteries (non-static method call))
+
+# 09/08/2024
+
+- Improved display of the configuration window for transmitted equipment
+- Fixed bug on orphaned commands when transmitting through mqtt
+
 # 08/08/2024
 
 - For equipment transmitted on Mqtt the plugin now sends the battery level every night
@@ -11,6 +33,7 @@
 - Correct management of refresh commands on widgets on equipment transmitted between Jeedom
 - When sending the discovery between Jeedom the values of the commands are also transmitted (no need to wait for an update of the value to have it on the target). Requires resend discovery
 - When transmitting equipment between Jeedom the plugin now manages the real type of equipment to be compatible with mobile applications. Requires resend discovery
+- Added a global configuration window for the transmission of equipment between Jeedom
 
 # 05/08/2024
 

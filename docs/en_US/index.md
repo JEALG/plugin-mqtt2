@@ -34,15 +34,15 @@ Once the Mosquitto broker is installed *(if necessary)*, you can continue with t
 
 - **Authentication**: You can specify users / password for connection :
 
-  - in local mode you can enter a `username:password` per line, each pair of identifiers will have valid access to the broker. If there is no identifier, Jeedom creates one automatically.
+  - In local mode you can enter a `username:password` per line, each pair of identifiers will have valid access to the broker. If there is no identifier, Jeedom creates one automatically.
 
-  - in standalone mode it is enough to put on the first line the couple ` identifier:password` for Jeedom (example : if the username is `jeedom` and the password `mqtt`, you must enter `jeedom`:mqtt``).
+  - In standalone mode it is enough to put on the first line the couple ` identifier:password` for Jeedom (example : if the username is `jeedom` and the password `mqtt`, you must enter `jeedom`:mqtt``).
 
   >**IMPORTANT**
   >
-  >Authentication is mandatory in local mode. Following the addition, Jeedom must be restarted for this to take effect.
+  > Authentication is mandatory in local mode. Following the addition, Jeedom must be restarted for this to take effect.
 
-- **Jeedom root topic** : Root topic to send a command to Jeedom or on which it sends the events. Attention it is only possible to put 1 or 2 levels maximum.
+- **Jeedom root topic** : Root subject to send a command to Jeedom or to which it returns events. Attention it is only possible to put 1 or 2 levels maximum.
 
 - **Transmit all events** : Check the box to send all Jeedom command events on MQTT.
 
@@ -54,7 +54,7 @@ Once the Mosquitto broker is installed *(if necessary)*, you can continue with t
 
 It is possible to create MQTT equipment directly in the plugin.
 
-You must indicate the root topic of the equipment *(`test` for example)*, then according to the type of commands :
+You must indicate the root topic of the equipment *(`test` for example)*, Be careful the root topic cannot have more than 2 levels (exe `level1/level2`) then depending on the type of commands :
 
 - **Info commands** : just indicate the full topic.
   >For example, if you put `toto/1`, all the messages on the topic `test/toto/1` will be automatically written on the command in question. The system is able to manage json type fields, in this case you have to put `toto/1/key1` or `toto/1/key1/key2` to go down one level.
@@ -109,12 +109,12 @@ The plugin can auto-discover several types of modules. To do this, you just need
 
 It is possible thanks to the plugin to transmit commands between two Jeedom (this system is dedicated to replacing jeelink), here is how to configure it : 
 
-- on the jeedom source you need :
-  - in the configuration of the mqtt manager plugin, configure the "Jeedom root topic" field, by default it is jeedom, it is recommended to put a unique value per Jeedom (e.g : jeedom_salon)
-  - then you can either check the "Transmit all events" box (still in the configuration of the mqtt manager plugin), this is not the most recommended because it will send all the equipment to the target jeedom. The best thing is to go to the equipment you want to transmit, in the advanced configuration of the equipment (button at the top right on the equipment configuration page) then in "Additional information" to check "Transmit the MQTT equipment"
-- on the target jeedom it is necessary : 
-  - in the configuration of the mqtt manager plugin, configure the “Linked Jeedom Topic” field by setting the value of “Jeedom root topic” of the source jeedom. You can put several Jeedom sources by separating them with ,. Be careful, you have to be very careful here, you should definitely not have the same thing for "Jeedom root topic" on jeedoms. This field is the unique identifier of the jeedom so it is absolutely necessary to have different values
-  - in plugin -> programming -> Mqtt manager activate auto-discovery (inactive by default)
+- **On the jeedom source you need** :
+  - In the configuration of the mqtt manager plugin, configure the "Jeedom root topic" field, by default it is jeedom, it is recommended to put a unique value per Jeedom (e.g : jeedom_salon)
+  - Then you can either check the "Transmit all events" box (still in the configuration of the mqtt manager plugin), this is not the most recommended because it will send all the equipment to the target jeedom. The best thing is to go to the equipment you want to transmit, in the advanced configuration of the equipment (button at the top right on the equipment configuration page) then in "Additional information" to check "Transmit the MQTT equipment"
+- **On the target jeedom it is necessary** : 
+  - Without configuring the mqtt manager plugin, configure the “Linked Jeedom Topic” field by setting the value of “Jeedom root topic” of the source jeedom. You can put several Jeedom sources by separating them with ,. Be careful, you have to be very careful here, you should definitely not have the same thing for "Jeedom root topic" on jeedoms. This field is the unique identifier of the jeedom so it is absolutely necessary to have different values.
+  - In plugin -> programming -> Mqtt manager activate auto-discovery (inactive by default)
 
 Then you just have to return to the jeedom still on the plugin configuration and do "Send discovery"
 
@@ -129,7 +129,7 @@ Then you just have to return to the jeedom still on the plugin configuration and
 
 # Linked two different mosquitto 
 
-It is possible to link topics between several mosquitto, here is the configuration to add in mosquitto. The configuration only needs to be done on one of the brocker mosquitto : 
+It is possible to link topics between several mosquitto, here is the configuration to add in mosquitto. The configuration only needs to be done on one of the brocker mosquitto :
 
 ````````
 connection #NOM_CONNEXION#
@@ -148,12 +148,41 @@ bridge_insecure true
 bridge_tls_version tlsv1.3
 ````````
 
+Example you want to send equipment from jeedom_2 to jeedom_1 by having : 
+- jeedom_1 : 
+  - ip : 192.168.1.45
+  - root topic : jeedom_1
+  - related topic : jeedom_2
+  - Authentication : jeedom:password_1
+- jeedom_2
+  - root topic : jeedom_1
+  - Authentication : jeedom:password_2
+
+Here is the configuration that must be added in jeedom_2 (mosquito parameter) : 
+
+````````
+connection jeedom_1
+address 192.168.1.45:1883
+topic # both 0 jeedom_2/ jeedom_2/
+cleansession true
+notifications false
+remote_clientid jeedom_2
+remote_username jeedom
+remote_password password_1
+local_username jeedom
+local_password password_2
+start_type automatic
+try_private true
+bridge_insecure true
+bridge_tls_version tlsv1.3
+````````
+
 >**NOTE**
 >
-> ``#NOM_CONNEXION#`` : can be whatever you want and it doesn't matter. You can for example do name_jeedom_source-name_jeedom_target
-> ``#REMOTE_CLIENT_ID#`` : doesn't matter either, you just have to put a unique string 
-> ``#LOCAL_TOPIC#`` : name of the local topic often it will be "Jeedom root topic" of the local jeedom 
-> ``#REMOTE_TOPIC#`` : name of the local topic often it will be "Jeedom root topic" of the remote jeedom
+> - ``#NOM_CONNEXION#`` : can be whatever you want and it doesn't matter. You can for example do name_jeedom_source-name_jeedom_target
+> - ``#REMOTE_CLIENT_ID#`` : doesn't matter either, you just have to put a unique string
+> - ``#LOCAL_TOPIC#`` : name of the local topic often it will be "Jeedom root topic" of the local jeedom
+> - ``#REMOTE_TOPIC#`` : name of the local topic often it will be "Jeedom root topic" of the remote jeedom
 
 >**IMPORTANT**
 >

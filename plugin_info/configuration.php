@@ -43,12 +43,13 @@ if (!isConnect()) {
         <label class="col-md-4 control-label">{{Broker Mosquitto}}
           <sup><i class="fas fa-question-circle tooltips" title="{{Installer, désinstaller ou télécharger le certificat client du broker Mosquitto}}"></i></sup>
         </label>
-        <div class="col-md-7">
+        <div class="col-md-8">
           <a class="btn btn-xs btn-warning" id="bt_mqtt2RestartMosquitto"><i class="fas fa-play"></i> {{(Re)Démarrer}}</a>
           <a class="btn btn-xs btn-danger" id="bt_mqtt2StopMosquitto"><i class="fas fa-stop"></i> {{Arrêter}}</a>
           <a class="btn btn-xs btn-warning" id="bt_mqtt2InstallMosquitto"><i class="fas fa-plus-square"></i> {{(Ré)Installer}}</a>
           <a class="btn btn-xs btn-danger" id="bt_mqtt2UninstallMosquitto"><i class="fas fa-minus-square"></i> {{Désinstaller}}</a>
-          <a class="btn btn-sm btn-primary pull-right" target="_blank" href="plugins/mqtt2/core/php/downloadClientSsl.php"><i class="fas fa-key"></i> {{Télécharger le certificat client}}</a>
+          <a class="btn btn-xs btn-primary" id="bt_mqtt2LogMosquitto"><i class="far fa-file"></i> {{Log}}</a>
+          <a class="btn btn-xs btn-primary" target="_blank" href="plugins/mqtt2/core/php/downloadClientSsl.php"><i class="fas fa-key"></i> {{Télécharger le certificat client}}</a>
         </div>
       </div>
 
@@ -120,10 +121,17 @@ if (!isConnect()) {
         </label>
         <div class="col-md-7 form-inline">
           <input class="configKey form-control" data-l1key="root_topic">
-          <label class="checkbox-inline pull-right"><input type="checkbox" class="configKey" data-l1key="sendEvent">{{Transmettre tous les évènements}}
-            <sup><i class="fas fa-question-circle tooltips" title="{{Cocher la case pour que tous les événements des commandes soient transmis au broker MQTT, vous pouvez aussi le faire par équipements (pour ne pas tout transmettre) dans la configuration avancée de l'quipement que vous voulez transmettre}}"></i></sup>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-md-4 control-label">{{Transmission des équipements}}</label>
+        <div class="col-md-7 form-inline">
+          <a class="btn btn-success" id="bt_mqtt2SendDiscoveryConfiguration"><i class="far fa-paper-plane"></i> {{Envoyer la découverte}}</a>
+          <a class="btn btn-primary" id="bt_mqtt2DisplayTransmitDevice"><i class="fas fa-cog"></i> {{Gérer les équipements transmis}}</a>
+          <label class="checkbox-inline"><input type="checkbox" class="configKey" data-l1key="sendEvent">{{Transmettre tous les équipements}}
+            <sup><i class="fas fa-question-circle tooltips" title="{{Cocher la case pour transmettre tous les événements au broker MQTT. Vous pouvez également le faire par équipement (pour ne pas tout transmettre) dans la configuration avancée de l’équipement que vous voulez transmettre ou par le bouton Gérer les équipements transmis}}"></i></sup>
           </label>
-          <a class="btn btn-xs btn-success" id="bt_mqtt2SendDiscovery"><i class="far fa-paper-plane"></i> {{Envoyer la découverte}}</a>
+          
         </div>
       </div>
       <div class="form-group">
@@ -187,6 +195,37 @@ if (!isConnect()) {
   </fieldset>
 </form>
 <script>
+            
+  $('#bt_mqtt2DisplayTransmitDevice').off('click').on('click', function() {
+    jeeDialog.dialog({
+      id: 'jee_MqttModal',
+      title: '{{Equipement MQTT transmis}}',
+      width: '85vw',
+      height: '51vw',
+      top: '8vh',
+      contentUrl: 'index.php?v=d&plugin=mqtt2&modal=eqLogic.transmit'
+    }) 
+  });
+
+  $('#bt_mqtt2LogMosquitto').off('click').on('click', function() {
+    jeeDialog.dialog({
+      id: 'jee_MqttModal',
+      title: '{{Log mosquitto}}',
+      width: '85vw',
+      height: '51vw',
+      top: '8vh',
+      contentUrl: 'index.php?v=d&plugin=mqtt2&modal=mosquitto.log'
+    }) 
+  });
+
+  $('.configKey[data-l1key=sendEvent]').off('click').on('click', function() {
+    if($(this).value() == 1){
+      $('#bt_mqtt2DisplayTransmitDevice').hide()
+    }else{
+      $('#bt_mqtt2DisplayTransmitDevice').show()
+    }
+  })
+
   $('.configKey[data-l1key=mode]').off('change').on('change', function() {
     $('.mqtt2Mode').hide()
     $('.mqtt2Mode.' + $(this).value()).show()
@@ -196,30 +235,32 @@ if (!isConnect()) {
     let topic = $(this).attr('data-topic')
     let span = $(this).parent();
     bootbox.confirm('{{Confirmez-vous suppression de l\'abonnement : }}'+topic+'?', function(result) {
-      $.ajax({
-      type: "POST",
-      url: "plugins/mqtt2/core/ajax/mqtt2.ajax.php",
-      data: {
-        action: "removePluginTopic",
-        topic: topic
-      },
-      dataType: 'json',
-      error: function(error) {
-        $.fn.showAlert({message: error.message,level: 'danger'})
-      },
-      success: function(data) {
-        if (data.state != 'ok') {
-          $.fn.showAlert({message: data.result,level: 'danger'})
-          return
-        }
-        $.fn.showAlert({message: '{{Suppression réussie}}',level: 'success',emptyBefore: true})
-        span.remove();
+      if (result) {
+          $.ajax({
+          type: "POST",
+          url: "plugins/mqtt2/core/ajax/mqtt2.ajax.php",
+          data: {
+            action: "removePluginTopic",
+            topic: topic
+          },
+          dataType: 'json',
+          error: function(error) {
+            $.fn.showAlert({message: error.message,level: 'danger'})
+          },
+          success: function(data) {
+            if (data.state != 'ok') {
+              $.fn.showAlert({message: data.result,level: 'danger'})
+              return
+            }
+            $.fn.showAlert({message: '{{Suppression réussie}}',level: 'success',emptyBefore: true})
+            span.remove();
+          }
+        })
       }
-    })
     })
   })
 
-  $('#bt_mqtt2SendDiscovery').off('click').on('click', function() {
+  $('#bt_mqtt2SendDiscoveryConfiguration').off('click').on('click', function() {
     $.ajax({
       type: "POST",
       url: "plugins/mqtt2/core/ajax/mqtt2.ajax.php",

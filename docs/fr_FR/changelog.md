@@ -4,6 +4,28 @@
 >
 >Pour rappel s'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+- Ajout d'un message online et offline lors de du lancement et de l'arret (voulu ou non) du démon dans topic_racine/state
+- Si vous avez un équipement jeedom::monitor depuis le plugin virtuel le plugin va automatiquement ajouter la commande state (online ou offline), si vous avez deja cet équipement il faut relancer la decouverte
+- Correction d'un bug sur la transmission du type réel de l'équipement (lors de la transmission d'équipement entre jeedom)
+- Correction d'un bug sur la duplication de la tache d'écoute des évenements
+- Sur les équipements exportés si le plugin source existe sur le jeedom cible alors jeedom affichera l'icone du plugin
+- Pas d'erreur dans les logs lors de la transmission de commande (evite de casser jeedom si le demon est coupé)
+
+# 12/08/2024
+
+- Correction d'un bug sur l'envoi des équipements depuis la fenetre de configuration
+- Ajout d'un bouton pour voir les logs de mosquitto (si celui est en mode brocker local)
+- Mise à jour de la documentation pour mieux expliquer comment synchroniser des topics entre deux mosquitto
+
+# 10/08/2024
+
+- Correction d'un bug sur l'envoi des batterie (methode non static call)
+
+# 09/08/2024
+
+- Amélioration de l'affichage de la fenetre de configuration pour les équipements transmis
+- Correction d'un bug sur les commandes orpheline lors de la transmission a travers mqtt
+
 # 08/08/2024
 
 - Pour les équipements transmis sur Mqtt le plugin envoi maintenant toute les nuits le niveau de batterie
@@ -11,6 +33,7 @@
 - Gestion correcte des commandes de rafraichissement sur les widgets sur les équipements transmis entre Jeedom
 - Lors de l'envoi de la découverte entre Jeedom les valeurs des commandes sont aussi transmisent (plus besoin d'attendre une mise à jour de la valeur pour l'avoir sur la cible). Nécessite de renvoyer la découverte
 - Lors la transmission d'équipement entre Jeedom le plugin gere maintenant le type réel de l'équipement pour etre compatible avec les applications mobile. Nécessite de renvoyer la découverte
+- Ajout d'une fenetre de configuration globalement pour la transmission d'équipement entre Jeedom
 
 # 05/08/2024
 
